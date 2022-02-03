@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 plotly = "*"
 streamlit = "*"
-openpyxl = "*"
+pyxlsb = "*"
 geopandas="0.10.2"
 fiona="*"
 
