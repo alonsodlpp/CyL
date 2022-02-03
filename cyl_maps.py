@@ -162,6 +162,7 @@ def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas):
                                                              "Territorio común": "#CEFFEA"},
                                          hover_data=(["Provincia", "Segundo"] if ganador == "Ganador" else ["Provincia", "Ganador"]),
                                          animation_frame="Año",
+                                         animation_group="Provincia",
                                          center=coordenadas,
                                          mapbox_style="open-street-map",
                                          zoom=zoom_arg,
