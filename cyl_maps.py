@@ -158,14 +158,14 @@ def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas):
                                                              "Por Ávila": "black",
                                                              "CDS": "green",
                                                              "IU": "indianred",
-                                                             "Territorio común (condominio)": "#CEFFEA"},
+                                                             "Territorio común": "#CEFFEA"},
                                          hover_data=(["Provincia", "Segundo"] if ganador == "Ganador" else ["Provincia", "Ganador"]),
                                          animation_frame="Año",
                                          center=coordenadas,
                                          mapbox_style="open-street-map",
                                          zoom=zoom_arg,
                                          opacity=0.7,
-                                         height=600)
+                                         height=750)
     fig_provincia.update_geos(fitbounds="locations", visible=False)
 
     last_frame_num = int(len(fig_provincia.frames) - 1)
