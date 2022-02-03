@@ -172,7 +172,7 @@ def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas):
     fig_provincia.layout['sliders'][0]['active'] = last_frame_num
     fig_provincia = go.Figure(data=fig_provincia['frames'][last_frame_num]['data'],
                               frames=fig_provincia['frames'], layout=fig_provincia.layout)
-    fig_provincia.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1200
+    fig_provincia.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 2000
 
     fig_provincia.update_layout(
         title_text=('Primera' if ganador == "Ganador" else 'Segunda') + ' fuerza en cada municipio de ' + provincia_elegida,
@@ -259,7 +259,7 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
     fig_provincia.layout['sliders'][0]['active'] = last_frame_num
     fig_provincia = go.Figure(data=fig_provincia['frames'][last_frame_num]['data'],
                               frames=fig_provincia['frames'], layout=fig_provincia.layout)
-    fig_provincia.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1200
+    fig_provincia.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
 
     fig_provincia.update_layout(
         title_text='Resultados de ' + partido + ' en ' + provincia_elegida,
