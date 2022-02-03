@@ -70,7 +70,7 @@ def seleccionar_elecciones(cyl_datos, provincia):
     ----------
     elecciones: str
     """
-    if modo != 'Ganador de las elecciones':
+    if modo == '% de voto por partidos':
         if (partido_elegido == "VOX") | (partido_elegido == "Ciudadanos") | (partido_elegido == "Podemos"):
             cyl_datos = cyl_datos[cyl_datos["Año"] >= 2014]
         elif (partido_elegido == "UPL") & (provincia == "León"):
