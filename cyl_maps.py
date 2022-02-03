@@ -62,7 +62,7 @@ else:
 
 
 @st.cache(show_spinner=False)
-def seleccionar_elecciones(cyl_datos, partido, provincia):
+def seleccionar_elecciones(cyl_datos, provincia):
     """
     Selecciona el archivo de datos que contiene los datos de las elecciones elegidas por el usuario
 
@@ -70,21 +70,23 @@ def seleccionar_elecciones(cyl_datos, partido, provincia):
     ----------
     elecciones: str
     """
-
-    if (partido == "VOX") | (partido == "Ciudadanos") | (partido == "Podemos"):
-        cyl_datos = cyl_datos[cyl_datos["Año"] >= 2014]
-    elif (partido == "UPL") & (provincia == "León"):
-        cyl_datos = cyl_datos[cyl_datos["Año"] >= 1987]
-    elif (partido == "UPL") & (provincia == "Zamora"):
-        cyl_datos = cyl_datos[cyl_datos["Año"] >= 2003]
-    elif (partido == "UPL") & (provincia == "Salamanca"):
-        cyl_datos = cyl_datos[(cyl_datos["Año"] == 1987) & (cyl_datos["Año"] == 2019)]
-    elif partido == "XAV":
-        cyl_datos = cyl_datos[cyl_datos["Año"] == 2019]
-    elif partido == "UPyD":
-        cyl_datos = cyl_datos[(cyl_datos["Año"] == 2011) & (cyl_datos["Año"] == 2015)]
-    elif partido == "CDS":
-        cyl_datos = cyl_datos[(cyl_datos["Año"] == 1983) | (cyl_datos["Año"] == 1987) | (cyl_datos["Año"] == 1991) | (cyl_datos["Año"] == 1999) | (cyl_datos["Año"] == 2003)]
+    if modo != 'Ganador de las elecciones':
+        if (partido_elegido == "VOX") | (partido_elegido == "Ciudadanos") | (partido_elegido == "Podemos"):
+            cyl_datos = cyl_datos[cyl_datos["Año"] >= 2014]
+        elif (partido_elegido == "UPL") & (provincia == "León"):
+            cyl_datos = cyl_datos[cyl_datos["Año"] >= 1987]
+        elif (partido_elegido == "UPL") & (provincia == "Zamora"):
+            cyl_datos = cyl_datos[cyl_datos["Año"] >= 2003]
+        elif (partido_elegido == "UPL") & (provincia == "Salamanca"):
+            cyl_datos = cyl_datos[(cyl_datos["Año"] == 1987) & (cyl_datos["Año"] == 2019)]
+        elif partido_elegido == "XAV":
+            cyl_datos = cyl_datos[cyl_datos["Año"] == 2019]
+        elif partido_elegido == "UPyD":
+            cyl_datos = cyl_datos[(cyl_datos["Año"] == 2011) & (cyl_datos["Año"] == 2015)]
+        elif partido_elegido == "CDS":
+            cyl_datos = cyl_datos[(cyl_datos["Año"] == 1983) | (cyl_datos["Año"] == 1987) | (cyl_datos["Año"] == 1991) | (cyl_datos["Año"] == 1999) | (cyl_datos["Año"] == 2003)]
+    else:
+        pass
 
     return cyl_datos
 
@@ -276,7 +278,7 @@ mapa_cyl = "au.muni_cyl_recintos_comp.shp"
 mapa_cyl = gpd.read_file(mapa_cyl)
 mapa_cyl.drop(["nombre", "c_muni_id", "superf", "inspireid"], axis=1, inplace=True)
 
-cyl_elecciones = seleccionar_elecciones(cyl_resultados, partido_elegido, provincia_elegida)
+cyl_elecciones = seleccionar_elecciones(cyl_resultados, provincia_elegida)
 mapa_prov, zoom_prov, coord_prov = seleccionar_provincia(mapa_cyl, provincia_elegida)
 mapa_prov_merged = mapa_prov.merge(cyl_elecciones, on="codmun")
 mapa_prov_merged = mapa_prov_merged.set_index("Municipio")
