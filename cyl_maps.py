@@ -156,6 +156,7 @@ def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas):
                                                              "Ciudadanos": "orange",
                                                              "UPL": "brown",
                                                              "Por Ávila": "black",
+                                                             "UPyD": "pink",
                                                              "CDS": "green",
                                                              "IU": "indianred",
                                                              "Territorio común": "#CEFFEA"},
