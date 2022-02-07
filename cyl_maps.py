@@ -327,15 +327,3 @@ else:
 st.markdown("""
     <div style="text-align:right">©Junta de Castilla y León</div>
 """, unsafe_allow_html=True)
-
-mapa_prov_merged = mapa_prov_merged.sort_values(by="Año")
-
-if modo == "Ganador de las elecciones":
-    mapa_final = pintar_mapa_ganador(mapa_prov_merged, zoom_prov, coord_prov)
-    st.plotly_chart(mapa_final, use_container_width=True, sharing="streamlit")
-else:
-    mapa_final = pintar_mapa_partidos(mapa_prov_merged, zoom_prov, coord_prov, partido_elegido)
-    st.plotly_chart(mapa_final, use_container_width=True, sharing="streamlit")
-st.markdown("""
-    <div style="text-align:right">©Junta de Castilla y León</div>
-""", unsafe_allow_html=True)
