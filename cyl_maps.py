@@ -34,7 +34,8 @@ st.markdown("<h4 style='text-align: center; '>A continuación se presentan en fo
             unsafe_allow_html=True)
 
 st.markdown("<h5 style='text-align: center; '>"
-            "¿Recuerdas lo que ocurrió en tu municipio en anteriores elecciones? ¡Dale al **play** y descúbrelo en el mapa!</h5>")
+            "¿Recuerdas lo que ocurrió en tu municipio en anteriores elecciones? ¡Dale al play y descúbrelo en el mapa!</h5>"
+           unsafe_allow_html=True)
 
 modo = st.sidebar.radio(label="Elija el modo de visualización",
                         options=['% de voto por partidos', 'Ganador de las elecciones'],
