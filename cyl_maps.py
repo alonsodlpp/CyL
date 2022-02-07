@@ -8,7 +8,7 @@ import streamlit as st
 
 
 img = Image.open("CyL.png")
-st.set_page_config(page_title="CyL en mapas", page_icon=img, layout="wide")
+st.set_page_config(page_title="CyL en mapas", page_icon=img)
 
 st.markdown(
         f""" <style>.reportview-container .main .block-container{{
@@ -43,19 +43,21 @@ modo = st.sidebar.radio(label="Elija el modo de visualización",
                              " en cada provincia. También tiene la opción de ver cada municipio coloreado"
                              " según el partido ganador, o el segundo más votado")
 
-c1, c2 = st.columns((1, 1))
-
+c1, c2, c3 = st.columns((1, 1, 1))
 with c1:
+    elecciones = st.selectbox('Elija el tipo de elecciones que desea visualizar:',
+                              ('Autonómicas', 'Generales'))
+with c2:
     provincia_elegida = st.selectbox('Elija qué provincia desea visualizar:',
                                      ('Castilla y León', 'Ávila', 'Burgos', 'León', 'Palencia',
                                       'Salamanca', 'Segovia', 'Soria', 'Valladolid', 'Zamora'))
 
 if modo == 'Ganador de las elecciones':
-    with c2:
+    with c3:
         ganador = st.selectbox('Cada municipio tendrá el color del:',
                                ('Ganador', 'Segundo'))
 else:
-    with c2:
+    with c3:
         partido_elegido = st.selectbox('Elija un partido o la participación electoral:',
                                        ('Participación', 'PP', 'PSOE', 'VOX', 'Podemos', 'Ciudadanos', 'UPL', 'XAV',
                                         'UPyD', 'CDS'))
@@ -70,21 +72,26 @@ def seleccionar_elecciones(cyl_datos, provincia):
     ----------
     elecciones: str
     """
-    if modo == '% de voto por partidos':
+    if (modo == '% de voto por partidos') & (elecciones == "Autonómicas"):
         if (partido_elegido == "VOX") | (partido_elegido == "Ciudadanos") | (partido_elegido == "Podemos"):
-            cyl_datos = cyl_datos[cyl_datos["Año"] >= 2014]
+            cyl_datos = cyl_datos[cyl_datos["Elecciones"] >= 2014]
         elif (partido_elegido == "UPL") & (provincia == "León"):
-            cyl_datos = cyl_datos[cyl_datos["Año"] >= 1987]
+            cyl_datos = cyl_datos[cyl_datos["Elecciones"] >= 1987]
         elif (partido_elegido == "UPL") & (provincia == "Zamora"):
-            cyl_datos = cyl_datos[cyl_datos["Año"] >= 2003]
+            cyl_datos = cyl_datos[cyl_datos["Elecciones"] >= 2003]
         elif (partido_elegido == "UPL") & (provincia == "Salamanca"):
-            cyl_datos = cyl_datos[(cyl_datos["Año"] == 1987) & (cyl_datos["Año"] == 2019)]
+            cyl_datos = cyl_datos[(cyl_datos["Elecciones"] == 1987) & (cyl_datos["Elecciones"] == 2019)]
         elif partido_elegido == "XAV":
-            cyl_datos = cyl_datos[cyl_datos["Año"] == 2019]
-        elif partido_elegido == "UPyD":
-            cyl_datos = cyl_datos[(cyl_datos["Año"] == 2011) & (cyl_datos["Año"] == 2015)]
-        elif partido_elegido == "CDS":
-            cyl_datos = cyl_datos[(cyl_datos["Año"] == 1983) | (cyl_datos["Año"] == 1987) | (cyl_datos["Año"] == 1991) | (cyl_datos["Año"] == 1999) | (cyl_datos["Año"] == 2003)]
+            cyl_datos = cyl_datos[cyl_datos["Elecciones"] == 2019]
+
+    elif (modo == '% de voto por partidos') & (elecciones == "Generales"):
+        if (partido_elegido == "VOX") | (partido_elegido == "Ciudadanos") | (partido_elegido == "Podemos"):
+            cyl_datos = cyl_datos[cyl_datos["Elecciones"] != "Noviembre 2011"]
+        elif (partido_elegido == "UPL"):
+            cyl_datos = cyl_datos[(cyl_datos["Elecciones"] == "Junio 2016") & (cyl_datos["Elecciones"] == "Noviembre 2019")]
+        elif partido_elegido == "XAV":
+            cyl_datos = cyl_datos[cyl_datos["Elecciones"] == "Noviembre 2019"]
+
     else:
         pass
 
@@ -146,6 +153,27 @@ def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas):
     zoom_arg: int
     coordenadas: dict
     """
+    if elecciones == "Autonómicas":
+        copia = pd.concat([mapa_provincia_merged[(mapa_provincia_merged["Elecciones"] == 2011)].tail(6).copy(),
+                           mapa_provincia_merged[(mapa_provincia_merged["Elecciones"] == 2015)].tail(6).copy(),
+                           mapa_provincia_merged[(mapa_provincia_merged["Elecciones"] == 2019)].tail(6).copy()])
+
+    else:
+        copia = pd.concat([mapa_provincia_merged[(mapa_provincia_merged["Elecciones"] == "Noviembre 2011")].tail(6).copy(),
+                           mapa_provincia_merged[(mapa_provincia_merged["Elecciones"] == "Diciembre 2015")].tail(6).copy(),
+                           mapa_provincia_merged[(mapa_provincia_merged["Elecciones"] == "Junio 2016")].tail(6).copy(),
+                           mapa_provincia_merged[(mapa_provincia_merged["Elecciones"] == "Abril 2019")].tail(6).copy(),
+                           mapa_provincia_merged[(mapa_provincia_merged["Elecciones"] == "Noviembre 2019")].tail(6).copy()])
+
+    copia = copia.reset_index()
+    copia["Ganador"] = ["VOX", "Ciudadanos", "Podemos", "UPL", "XAV", "UPyD"] * len(mapa_provincia_merged["Elecciones"].unique())
+    copia["Segundo"] = ["Ciudadanos", "Podemos", "UPL", "XAV", "UPyD", "VOX"] * len(mapa_provincia_merged["Elecciones"].unique())
+    copia["Municipio"] = copia["Municipio"] + " "
+    copia["geometry"] = copia["geometry"].translate(30, 0)
+    copia = copia.set_index("Municipio")
+
+    orden = {"Elecciones": ["Noviembre 2011", "Diciembre 2015", "Junio 2016", "Abril 2019", "Noviembre 2019"]}
+    mapa_provincia_merged = pd.concat([mapa_provincia_merged, copia])
 
     fig_provincia = px.choropleth_mapbox(mapa_provincia_merged, geojson=mapa_provincia_merged.geometry,
                                          locations=mapa_provincia_merged.index, color=ganador,
@@ -154,17 +182,16 @@ def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas):
                                                              "VOX": 'green',
                                                              "Podemos": "purple",
                                                              "Ciudadanos": "orange",
+                                                             "UPyD": "hotpink",
                                                              "UPL": "brown",
-                                                             "Por Ávila": "black",
-                                                             "UPyD": "pink",
-                                                             "CDS": "green",
-                                                             "IU": "indianred",
-                                                             "Territorio común": "#CEFFEA"},
+                                                             "XAV": "black",
+                                                             "IU": "mediumvioletred",
+                                                             "Territorio común (condominio)": "#CEFFEA"},
                                          hover_data=(["Provincia", "Segundo"] if ganador == "Ganador" else ["Provincia", "Ganador"]),
-                                         animation_frame="Año",
-                                         animation_group="Provincia",
+                                         animation_frame="Elecciones",
                                          center=coordenadas,
                                          mapbox_style="open-street-map",
+                                         category_orders=orden,
                                          zoom=zoom_arg,
                                          opacity=0.7,
                                          height=750)
@@ -174,10 +201,11 @@ def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas):
     fig_provincia.layout['sliders'][0]['active'] = last_frame_num
     fig_provincia = go.Figure(data=fig_provincia['frames'][last_frame_num]['data'],
                               frames=fig_provincia['frames'], layout=fig_provincia.layout)
-    fig_provincia.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 2000
+    fig_provincia.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1200
 
     fig_provincia.update_layout(
         title_text=('Primera' if ganador == "Ganador" else 'Segunda') + ' fuerza en cada municipio de ' + provincia_elegida,
+        title=dict(x=0.5),
         plot_bgcolor="rgb(245, 245, 245)",
         margin={"r": 5, "t": 35, "l": 5, "b": 10},
         showlegend=False,
@@ -185,6 +213,7 @@ def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas):
     fig_provincia.update_traces(marker=dict(line=dict(color='grey')))
 
     return fig_provincia
+
 
 @st.cache(suppress_st_warning=True, show_spinner=False)
 def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
@@ -200,7 +229,7 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
         partido: str
 
         """
-
+    orden = {"Elecciones": ["Noviembre 2011", "Diciembre 2015", "Junio 2016", "Abril 2019", "Noviembre 2019"]}
     minimo_color_votos = 0
     maximo_color_votos = 50
     hover_data = ["Provincia", "Censo", partido, partido + " %"]
@@ -246,10 +275,11 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
 
     fig_provincia = px.choropleth_mapbox(mapa_provincia_merged, geojson=mapa_prov_merged.geometry,
                                          locations=mapa_provincia_merged.index, color=partido + " %",
-                                         animation_frame="Año",
+                                         animation_frame="Elecciones",
                                          hover_data=hover_data,
                                          color_continuous_scale=color,
                                          center=coordenadas,
+                                         category_orders=orden,
                                          mapbox_style="open-street-map",
                                          opacity=0.75,
                                          zoom=zoom_arg,
@@ -261,7 +291,7 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
     fig_provincia.layout['sliders'][0]['active'] = last_frame_num
     fig_provincia = go.Figure(data=fig_provincia['frames'][last_frame_num]['data'],
                               frames=fig_provincia['frames'], layout=fig_provincia.layout)
-    fig_provincia.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
+    fig_provincia.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1200
 
     fig_provincia.update_layout(
         title_text='Resultados de ' + partido + ' en ' + provincia_elegida,
@@ -272,9 +302,10 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
 
     return fig_provincia
 
-
-
-cyl_resultados = pd.read_excel("CyL autonómicas.xlsb")
+if elecciones == "Autonómicas":
+    cyl_resultados = pd.read_excel("CyL autonómicas.xlsb")
+else:
+    cyl_resultados = pd.read_excel("CyL generales.xlsb")
 
 mapa_cyl = "au.muni_cyl_recintos_comp.shp"
 mapa_cyl = gpd.read_file(mapa_cyl)
@@ -284,6 +315,19 @@ cyl_elecciones = seleccionar_elecciones(cyl_resultados, provincia_elegida)
 mapa_prov, zoom_prov, coord_prov = seleccionar_provincia(mapa_cyl, provincia_elegida)
 mapa_prov_merged = mapa_prov.merge(cyl_elecciones, on="codmun")
 mapa_prov_merged = mapa_prov_merged.set_index("Municipio")
+mapa_prov_merged = mapa_prov_merged.sort_values(by="Elecciones")
+
+
+if modo == "Ganador de las elecciones":
+    mapa_final = pintar_mapa_ganador(mapa_prov_merged, zoom_prov, coord_prov)
+    st.plotly_chart(mapa_final, use_container_width=True, sharing="streamlit")
+else:
+    mapa_final = pintar_mapa_partidos(mapa_prov_merged, zoom_prov, coord_prov, partido_elegido)
+    st.plotly_chart(mapa_final, use_container_width=True, sharing="streamlit")
+st.markdown("""
+    <div style="text-align:right">©Junta de Castilla y León</div>
+""", unsafe_allow_html=True)
+
 mapa_prov_merged = mapa_prov_merged.sort_values(by="Año")
 
 if modo == "Ganador de las elecciones":
