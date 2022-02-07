@@ -206,9 +206,16 @@ def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas, elecciones
     fig_provincia = go.Figure(data=fig_provincia['frames'][last_frame_num]['data'],
                               frames=fig_provincia['frames'], layout=fig_provincia.layout)
     fig_provincia.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1200
+        
+    for button in fig_provincia.layout.updatemenus[0].buttons:
+        button['args'][1]['frame']['redraw'] = True
+
+    for k in range(len(fig_provincia.frames)):
+        fig_provincia.frames[k]['layout'].update(title_text=('Primera' if ganador == "Ganador" else 'Segunda') + ' fuerza en cada municipio de ' + provincia_elegida + ' en las elecciones ' + tipo_elecciones.lower() + ' de ' + fig_provincia.frames[k].name)
+
 
     fig_provincia.update_layout(
-        title_text=('Primera' if ganador == "Ganador" else 'Segunda') + ' fuerza en cada municipio de ' + provincia_elegida,
+        title_text=('Primera' if ganador == "Ganador" else 'Segunda') + ' fuerza en cada municipio de ' + provincia_elegida + ' en las elecciones ' + tipo_elecciones.lower() + ' de ' + fig_provincia.frames[-1].name,
         title=dict(x=0.5),
         plot_bgcolor="rgb(245, 245, 245)",
         margin={"r": 5, "t": 35, "l": 5, "b": 10},
@@ -297,11 +304,19 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
         fig_provincia = go.Figure(data=fig_provincia['frames'][last_frame_num]['data'],
                                   frames=fig_provincia['frames'], layout=fig_provincia.layout)
         fig_provincia.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1200
+        
+        for button in fig_provincia.layout.updatemenus[0].buttons:
+            button['args'][1]['frame']['redraw'] = True
+
+        for k in range(len(fig_provincia.frames)):
+            fig_provincia.frames[k]['layout'].update(
+                title_text='Resultados de ' + partido + ' en ' + provincia_elegida + ' en las elecciones ' + tipo_elecciones.lower() + ' de ' +
+                           fig_provincia.frames[k].name)
     else:
         pass
 
     fig_provincia.update_layout(
-        title_text='Resultados de ' + partido + ' en ' + provincia_elegida,
+        title_text='Resultados de ' + partido + ' en ' + provincia_elegida + ' en las elecciones ' + tipo_elecciones.lower(),
         title=dict(x=0.5),
         margin={"r": 5, "t": 35, "l": 5, "b": 10},
         hoverlabel=dict(align="left", bgcolor=bgcolor, font_family="Rockwell", font_size=14),
