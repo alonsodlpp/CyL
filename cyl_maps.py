@@ -316,7 +316,7 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
         pass
 
     fig_provincia.update_layout(
-        title_text='Resultados de ' + partido + ' en ' + provincia_elegida + ' en las elecciones ' + tipo_elecciones.lower(),
+        title_text='Resultados de ' + partido + ' en ' + provincia_elegida + ' en las elecciones ' + tipo_elecciones.lower() + ' de ' + ("2019" if tipo_elecciones == "Autonómicas" else "Noviembre 2019"),
         title=dict(x=0.5),
         margin={"r": 5, "t": 35, "l": 5, "b": 10},
         hoverlabel=dict(align="left", bgcolor=bgcolor, font_family="Rockwell", font_size=14),
