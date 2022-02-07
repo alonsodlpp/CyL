@@ -8,7 +8,7 @@ import streamlit as st
 
 
 img = Image.open("CyL.png")
-st.set_page_config(page_title="CyL en mapas", page_icon=img, layout="wide")
+st.set_page_config(page_title="CyL en mapas", page_icon=img)
 
 st.markdown(
         f""" <style>.reportview-container .main .block-container{{
@@ -45,12 +45,12 @@ modo = st.sidebar.radio(label="Elija el modo de visualización",
 
 c1, c2, c3 = st.columns((1, 1, 1))
 with c1:
-    elecciones = st.selectbox('Elija el tipo de elecciones que desea visualizar:',
+    tipo_elecciones = st.selectbox('Elija el tipo de elecciones que desea visualizar:',
                               ('Autonómicas', 'Generales'))
 with c2:
     provincia_elegida = st.selectbox('Elija qué provincia desea visualizar:',
-                                     ('Castilla y León', 'Ávila', 'Burgos', 'León', 'Palencia',
-                                      'Salamanca', 'Segovia', 'Soria', 'Valladolid', 'Zamora'))
+                                     ('Ávila', 'Burgos', 'León', 'Palencia', 'Salamanca',
+                                      'Segovia', 'Soria', 'Valladolid', 'Zamora', 'Castilla y León', ), index=4)
 
 if modo == 'Ganador de las elecciones':
     with c3:
@@ -59,12 +59,11 @@ if modo == 'Ganador de las elecciones':
 else:
     with c3:
         partido_elegido = st.selectbox('Elija un partido o la participación electoral:',
-                                       ('Participación', 'PP', 'PSOE', 'VOX', 'Podemos', 'Ciudadanos', 'UPL', 'XAV',
-                                        'UPyD', 'CDS'))
+                                       ('Participación', 'PP', 'PSOE', 'VOX', 'Podemos', 'Ciudadanos', 'UPL', 'XAV'))
 
 
 @st.cache(show_spinner=False)
-def seleccionar_elecciones(cyl_datos, provincia):
+def seleccionar_elecciones(provincia, elecciones):
     """
     Selecciona el archivo de datos que contiene los datos de las elecciones elegidas por el usuario
 
@@ -72,6 +71,11 @@ def seleccionar_elecciones(cyl_datos, provincia):
     ----------
     elecciones: str
     """
+    if elecciones == "Autonómicas":
+        cyl_datos = pd.read_excel("CyL autonómicas.xlsb")
+    else:
+        cyl_datos = pd.read_excel("CyL generales.xlsb")
+
     if (modo == '% de voto por partidos') & (elecciones == "Autonómicas"):
         if (partido_elegido == "VOX") | (partido_elegido == "Ciudadanos") | (partido_elegido == "Podemos"):
             cyl_datos = cyl_datos[cyl_datos["Elecciones"] >= 2014]
@@ -87,8 +91,8 @@ def seleccionar_elecciones(cyl_datos, provincia):
     elif (modo == '% de voto por partidos') & (elecciones == "Generales"):
         if (partido_elegido == "VOX") | (partido_elegido == "Ciudadanos") | (partido_elegido == "Podemos"):
             cyl_datos = cyl_datos[cyl_datos["Elecciones"] != "Noviembre 2011"]
-        elif (partido_elegido == "UPL"):
-            cyl_datos = cyl_datos[(cyl_datos["Elecciones"] == "Junio 2016") & (cyl_datos["Elecciones"] == "Noviembre 2019")]
+        elif partido_elegido == "UPL":
+            cyl_datos = cyl_datos[(cyl_datos["Elecciones"] == "Junio 2016") | (cyl_datos["Elecciones"] == "Noviembre 2019")]
         elif partido_elegido == "XAV":
             cyl_datos = cyl_datos[cyl_datos["Elecciones"] == "Noviembre 2019"]
 
@@ -142,7 +146,7 @@ def seleccionar_provincia(mapa, provincia):
 
 
 @st.cache(suppress_st_warning=True, show_spinner=False)
-def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas):
+def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas, elecciones):
     """
     Devuelve el mapa de Castilla y León o de una de sus provincias con cada municipio del color del partido ganador
     de las elecciones elegidas por el usuario
@@ -183,7 +187,7 @@ def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas):
                                                              "Podemos": "purple",
                                                              "Ciudadanos": "orange",
                                                              "UPyD": "hotpink",
-                                                             "UPL": "brown",
+                                                             "UPL": "hotpink",
                                                              "XAV": "black",
                                                              "IU": "mediumvioletred",
                                                              "Territorio común (condominio)": "#CEFFEA"},
@@ -287,11 +291,14 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
     fig_provincia.update_geos(fitbounds="locations", visible=False)
     fig_provincia.update_coloraxes(cmin=minimo_color_votos, cmax=maximo_color_votos)
 
-    last_frame_num = int(len(fig_provincia.frames) - 1)
-    fig_provincia.layout['sliders'][0]['active'] = last_frame_num
-    fig_provincia = go.Figure(data=fig_provincia['frames'][last_frame_num]['data'],
-                              frames=fig_provincia['frames'], layout=fig_provincia.layout)
-    fig_provincia.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1200
+    if len(mapa_provincia_merged["Elecciones"].unique()) > 1:
+        last_frame_num = int(len(fig_provincia.frames) - 1)
+        fig_provincia.layout['sliders'][0]['active'] = last_frame_num
+        fig_provincia = go.Figure(data=fig_provincia['frames'][last_frame_num]['data'],
+                                  frames=fig_provincia['frames'], layout=fig_provincia.layout)
+        fig_provincia.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1200
+    else:
+        pass
 
     fig_provincia.update_layout(
         title_text='Resultados de ' + partido + ' en ' + provincia_elegida,
@@ -302,24 +309,19 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
 
     return fig_provincia
 
-if elecciones == "Autonómicas":
-    cyl_resultados = pd.read_excel("CyL autonómicas.xlsb")
-else:
-    cyl_resultados = pd.read_excel("CyL generales.xlsb")
 
 mapa_cyl = "au.muni_cyl_recintos_comp.shp"
 mapa_cyl = gpd.read_file(mapa_cyl)
-mapa_cyl.drop(["nombre", "c_muni_id", "superf", "inspireid"], axis=1, inplace=True)
+#mapa_cyl.drop(["nombre", "c_muni_id", "superf", "inspireid"], axis=1, inplace=True)
 
-cyl_elecciones = seleccionar_elecciones(cyl_resultados, provincia_elegida)
+cyl_elecciones = seleccionar_elecciones(provincia_elegida, tipo_elecciones)
 mapa_prov, zoom_prov, coord_prov = seleccionar_provincia(mapa_cyl, provincia_elegida)
 mapa_prov_merged = mapa_prov.merge(cyl_elecciones, on="codmun")
 mapa_prov_merged = mapa_prov_merged.set_index("Municipio")
 mapa_prov_merged = mapa_prov_merged.sort_values(by="Elecciones")
 
-
 if modo == "Ganador de las elecciones":
-    mapa_final = pintar_mapa_ganador(mapa_prov_merged, zoom_prov, coord_prov)
+    mapa_final = pintar_mapa_ganador(mapa_prov_merged, zoom_prov, coord_prov, tipo_elecciones)
     st.plotly_chart(mapa_final, use_container_width=True, sharing="streamlit")
 else:
     mapa_final = pintar_mapa_partidos(mapa_prov_merged, zoom_prov, coord_prov, partido_elegido)
