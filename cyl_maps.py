@@ -102,23 +102,23 @@ def seleccionar_elecciones(provincia, elecciones):
     return cyl_datos
 
 
-@st.cache(show_spinner=False)
-def seleccionar_provincia(mapa, provincia):
+def seleccionar_provincia(provincia):
     """
     Selecciona la provincia de Castilla y León (o Castilla y León en su conjunto) que se desea visualizar.
 
     Parámetros
     ----------
-    mapa: shape file
     provincia: str
     """
+    mapa = "au.muni_cyl_recintos_comp.shp"
+    mapa = gpd.read_file(mapa_cyl)
+    mapa.drop(["nombre", "c_muni_id", "superf", "inspireid"], axis=1, inplace=True)
 
     zoom_provincia = 0
     center_provincia = {}
     if provincia == 'Castilla y León':
         zoom_provincia = 6.5
         center_provincia = {"lat": 41.6300, "lon": -4.2700}
-        mapa_provincia = mapa
     else:
         codigo_provincia = ""
         for prov, codigo, zoom, center in (
@@ -137,12 +137,12 @@ def seleccionar_provincia(mapa, provincia):
                 zoom_provincia = zoom
                 center_provincia = center
 
-        mapa_provincia = mapa[mapa["c_prov_id"] == codigo_provincia]
+        mapa = mapa[mapa["c_prov_id"] == codigo_provincia]
 
-    mapa_provincia.to_crs(pyproj.CRS.from_epsg(4326), inplace=True)
-    mapa_provincia["codmun"] = mapa_provincia["codmun"].astype(int)
+    mapa.to_crs(pyproj.CRS.from_epsg(4326), inplace=True)
+    mapa["codmun"] = mapa["codmun"].astype(int)
 
-    return mapa_provincia, zoom_provincia, center_provincia
+    return mapa, zoom_provincia, center_provincia
 
 
 @st.cache(suppress_st_warning=True, show_spinner=False)
@@ -156,6 +156,7 @@ def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas, elecciones
     mapa_provincia_merged: geopandas
     zoom_arg: int
     coordenadas: dict
+    elecciones: str
     """
     if elecciones == "Autonómicas":
         copia = pd.concat([mapa_provincia_merged[(mapa_provincia_merged["Elecciones"] == 2011)].tail(6).copy(),
@@ -238,7 +239,6 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
         zoom_arg: int
         coordenadas: dict
         partido: str
-
         """
     orden = {"Elecciones": ["Noviembre 2011", "Diciembre 2015", "Junio 2016", "Abril 2019", "Noviembre 2019"]}
     minimo_color_votos = 0
@@ -325,12 +325,9 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
     return fig_provincia
 
 
-mapa_cyl = "au.muni_cyl_recintos_comp.shp"
-mapa_cyl = gpd.read_file(mapa_cyl)
-#mapa_cyl.drop(["nombre", "c_muni_id", "superf", "inspireid"], axis=1, inplace=True)
 
 cyl_elecciones = seleccionar_elecciones(provincia_elegida, tipo_elecciones)
-mapa_prov, zoom_prov, coord_prov = seleccionar_provincia(mapa_cyl, provincia_elegida)
+mapa_prov, zoom_prov, coord_prov = seleccionar_provincia(provincia_elegida)
 mapa_prov_merged = mapa_prov.merge(cyl_elecciones, on="codmun")
 mapa_prov_merged = mapa_prov_merged.set_index("Municipio")
 mapa_prov_merged = mapa_prov_merged.sort_values(by="Elecciones")
