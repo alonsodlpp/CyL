@@ -111,7 +111,7 @@ def seleccionar_provincia(provincia):
     provincia: str
     """
     mapa = "au.muni_cyl_recintos_comp.shp"
-    mapa = gpd.read_file(mapa_cyl)
+    mapa = gpd.read_file(mapa)
     mapa.drop(["nombre", "c_muni_id", "superf", "inspireid"], axis=1, inplace=True)
 
     zoom_provincia = 0
