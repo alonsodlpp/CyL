@@ -50,9 +50,13 @@ with c1:
 with c2:
     provincia_elegida = st.selectbox('Elija qué provincia desea visualizar:',
                                      ('Ávila', 'Burgos', 'León', 'Palencia', 'Salamanca',
-                                      'Segovia', 'Soria', 'Valladolid', 'Zamora', 'Castilla y León', ), index=4)
+                                      'Segovia', 'Soria', 'Valladolid', 'Zamora', 'Castilla y León'), index=4)
 
 if modo == 'Ganador de las elecciones':
+    with c2:
+        provincia_elegida = st.selectbox('Elija qué provincia desea visualizar:',
+                                         ('Ávila', 'Burgos', 'León', 'Palencia', 'Salamanca',
+                                          'Segovia', 'Soria', 'Valladolid', 'Zamora'), index=4)
     with c3:
         ganador = st.selectbox('Cada municipio tendrá el color del:',
                                ('Ganador', 'Segundo'))
