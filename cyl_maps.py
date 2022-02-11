@@ -189,7 +189,7 @@ def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas, elecciones
                                                              "Ciudadanos": "orange",
                                                              "UPyD": "hotpink",
                                                              "UPL": "hotpink",
-                                                             "XAV": "black",
+                                                             "XAV": "lightgoldenrodyellow",
                                                              "IU": "mediumvioletred",
                                                              "Territorio común (condominio)": "#CEFFEA"},
                                          hover_data=(["Provincia", "Segundo"] if ganador == "Ganador" else ["Provincia", "Ganador"]),
@@ -269,11 +269,8 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
         bgcolor = "deeppink"
     elif partido == "XAV":
         st.warning("El partido XAV (Por Ávila) sólo se presenta en la circunscripción de Ávila")
-        color = "Greys"
-        bgcolor = "darkgray"
-    elif partido == "CDS":
-        color = "Greens"
-        bgcolor = "forestgreen"
+        color = "YlOrBr"
+        bgcolor = "lightgoldenrodyellow"
     else:
         color = "turbid"
         bgcolor = "floralwhite"
