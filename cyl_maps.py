@@ -78,15 +78,13 @@ def seleccionar_elecciones(provincia, elecciones):
 
     if (modo == '% de voto por partidos') & (elecciones == "Autonómicas"):
         if (partido_elegido == "VOX") | (partido_elegido == "Ciudadanos") | (partido_elegido == "Podemos"):
-            cyl_datos = cyl_datos[cyl_datos["Elecciones"] >= 2014]
-        elif (partido_elegido == "UPL") & (provincia == "León"):
-            cyl_datos = cyl_datos[cyl_datos["Elecciones"] >= 1987]
-        elif (partido_elegido == "UPL") & (provincia == "Zamora"):
-            cyl_datos = cyl_datos[cyl_datos["Elecciones"] >= 2003]
+            cyl_datos = cyl_datos[cyl_datos["Elecciones"] >= 2015]
+        elif (partido_elegido == "UPL") & ((provincia == "León") | (provincia == "Zamora")):
+            cyl_datos = cyl_datos[cyl_datos["Elecciones"] >= 2011]
         elif (partido_elegido == "UPL") & (provincia == "Salamanca"):
-            cyl_datos = cyl_datos[(cyl_datos["Elecciones"] == 1987) & (cyl_datos["Elecciones"] == 2019)]
-        elif partido_elegido == "XAV":
-            cyl_datos = cyl_datos[cyl_datos["Elecciones"] == 2019]
+            cyl_datos = cyl_datos[(cyl_datos["Elecciones"] == 2019)] # | (cyl_datos["Elecciones"] == 2022)]
+        elif (partido_elegido == "XAV"): # | (partido_elegido == "EV / Soria ¡YA!"):
+            cyl_datos = cyl_datos[(cyl_datos["Elecciones"] == 2019)] # | (cyl_datos["Elecciones"] == 2022)]
 
     elif (modo == '% de voto por partidos') & (elecciones == "Generales"):
         if (partido_elegido == "VOX") | (partido_elegido == "Ciudadanos") | (partido_elegido == "Podemos"):
@@ -95,6 +93,8 @@ def seleccionar_elecciones(provincia, elecciones):
             cyl_datos = cyl_datos[(cyl_datos["Elecciones"] == "Junio 2016") | (cyl_datos["Elecciones"] == "Noviembre 2019")]
         elif partido_elegido == "XAV":
             cyl_datos = cyl_datos[cyl_datos["Elecciones"] == "Noviembre 2019"]
+        #elif partido_elegido == "EV / Soria ¡YA!":
+        #    st.warning("El partido seleccionado no se ha presentado a las elecciones generales")
 
     else:
         pass
@@ -189,7 +189,7 @@ def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas, elecciones
                                                              "Ciudadanos": "orange",
                                                              "UPyD": "hotpink",
                                                              "UPL": "hotpink",
-                                                             "XAV": "lightgoldenrodyellow",
+                                                             "XAV": "yellow",
                                                              "IU": "mediumvioletred",
                                                              "Territorio común (condominio)": "#CEFFEA"},
                                          hover_data=(["Provincia", "Segundo"] if ganador == "Ganador" else ["Provincia", "Ganador"]),
@@ -270,7 +270,7 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
     elif partido == "XAV":
         st.warning("El partido XAV (Por Ávila) sólo se presenta en la circunscripción de Ávila")
         color = "YlOrBr"
-        bgcolor = "lightgoldenrodyellow"
+        bgcolor = "yellow"
     else:
         color = "turbid"
         bgcolor = "floralwhite"
