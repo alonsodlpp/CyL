@@ -76,7 +76,7 @@ def seleccionar_elecciones(provincia, elecciones):
     elecciones: str
     """
     if elecciones == "Autonómicas":
-        cyl_datos = pd.read_excel("CyL autonómicas.xlsb")
+        cyl_datos = pd.read_excel("CyL elecciones autonómicas.xlsb")
     else:
         cyl_datos = pd.read_excel("CyL generales.xlsb")
 
