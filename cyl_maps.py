@@ -29,7 +29,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-st.markdown("<h4 style='text-align: center; '>Los resultados de las elecciones del 13F en Castilla y León en mapas interactivos</h4>",
+st.markdown("<h4 style='text-align: center; '>Los resultados de las elecciones del 13F en Castilla y León a través de mapas interactivos</h4>",
             unsafe_allow_html=True)
 
 st.markdown("<h5 style='text-align: center; '>"
