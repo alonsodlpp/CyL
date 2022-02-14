@@ -254,7 +254,7 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
     orden = {"Elecciones": ["Noviembre 2011", "Diciembre 2015", "Junio 2016", "Abril 2019", "Noviembre 2019"]}
     minimo_color_votos = 0
     maximo_color_votos = 50
-    hover_data = ["Provincia", "Censo", partido, partido + " %"]
+    hover_data = ["Provincia", "Censo electoral", partido, partido + " %"]
     color_axis_colorbar = {'title': ' % Votos',
                            'tickvals': ["10", "20", "30", "40", "50"],
                            'ticktext': ["10", "20", "30", "40", "50 o más"]}
@@ -290,7 +290,7 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
         bgcolor = "floralwhite"
         minimo_color_votos = 40
         maximo_color_votos = 90
-        hover_data = ["Provincia", "Censo", "Votos emitidos", partido + " %"]
+        hover_data = ["Provincia", "Censo electoral", "Votos emitidos", partido + " %"]
         color_axis_colorbar = {'title': ' % Votos',
                                'tickvals': ["40", "50", "60", "70", "80", "90"],
                                'ticktext': ["40", "50", "60", "70", "80", "90 o más"]}
