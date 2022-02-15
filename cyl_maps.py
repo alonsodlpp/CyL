@@ -87,7 +87,7 @@ def seleccionar_elecciones(provincia, elecciones):
             cyl_datos = cyl_datos[cyl_datos["Elecciones"] >= 2011]
         elif (partido_elegido == "UPL") & (provincia == "Salamanca"):
             cyl_datos = cyl_datos[(cyl_datos["Elecciones"] == 2019) | (cyl_datos["Elecciones"] == 2022)]
-        elif (partido_elegido == "XAV") | (partido_elegido == "España Vaciada"):
+        elif partido_elegido == "XAV":
             cyl_datos = cyl_datos[(cyl_datos["Elecciones"] == 2019) | (cyl_datos["Elecciones"] == 2022)]
         elif (partido_elegido == "España Vaciada") | (partido_elegido == "Soria ¡YA!"):
             cyl_datos = cyl_datos[cyl_datos["Elecciones"] == 2022]
