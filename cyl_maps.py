@@ -145,12 +145,12 @@ def seleccionar_provincia(mapa, provincia):
                 zoom_provincia = zoom
                 center_provincia = center
 
-        mapa_provincia = mapa[mapa["c_prov_id"] == codigo_provincia]
+        mapa = mapa[mapa["c_prov_id"] == codigo_provincia]
 
-    mapa_provincia.to_crs(pyproj.CRS.from_epsg(4326), inplace=True)
-    mapa_provincia["codmun"] = mapa_provincia["codmun"].astype(int)
+    mapa.to_crs(pyproj.CRS.from_epsg(4326), inplace=True)
+    mapa["codmun"] = mapa["codmun"].astype(int)
 
-    return mapa_provincia, zoom_provincia, center_provincia
+    return mapa, zoom_provincia, center_provincia
 
 
 @st.cache(suppress_st_warning=True, show_spinner=False)
