@@ -10,18 +10,20 @@ import streamlit as st
 img = Image.open("CyL.png")
 st.set_page_config(page_title="CyL en mapas", page_icon=img, layout="wide")
 
-# st.markdown(
-#         f""" <style>.reportview-container .main .block-container{{
-#         max-width: {1500}px;
-#         padding-top: {1}rem;
-#         padding-right: {6}rem;
-#         padding-left: {6}rem;
-#         padding-bottom: {0}rem;
-#     }},
-#     .sidebar .sidebar-content {{
-#                 width: 200px;
-# </style>
-# """, unsafe_allow_html=True)
+st.markdown(
+    """
+    <style>
+    [data-testid="stSidebar"][aria-expanded="true"] > div:first-child{
+        width: 225px;
+    }
+    [data-testid="stSidebar"][aria-expanded="false"] > div:first-child{
+        width: 225px;
+        margin-left: -400px;
+    }
+
+    """,
+    unsafe_allow_html=True,
+)
 
 st.markdown("""
     <div style="background-color:#FF815F;padding:0px">
