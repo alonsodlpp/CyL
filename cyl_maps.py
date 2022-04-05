@@ -14,10 +14,10 @@ st.markdown(
     """
     <style>
     [data-testid="stSidebar"][aria-expanded="true"] > div:first-child{
-        width: 275px;
+        width: 265px;
     }
     [data-testid="stSidebar"][aria-expanded="false"] > div:first-child{
-        width: 275px;
+        width: 265px;
         margin-left: -400px;
     }
 
@@ -63,7 +63,7 @@ else:
                                          ('Ávila', 'Burgos', 'León', 'Palencia', 'Salamanca',
                                           'Segovia', 'Soria', 'Valladolid', 'Zamora', 'Castilla y León'), index=4)
     with c3:
-        partido_elegido = st.selectbox('Elija un partido o la participación electoral:',
+        partido_elegido = st.selectbox('Elija un partido:',
                                        ('Participación', 'PP', 'PSOE', 'VOX', 'Podemos', 'Ciudadanos', 'UPL', 'XAV',
                                         'España Vaciada', 'Soria ¡YA!'))
 
