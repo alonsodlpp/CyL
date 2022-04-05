@@ -14,10 +14,10 @@ st.markdown(
     """
     <style>
     [data-testid="stSidebar"][aria-expanded="true"] > div:first-child{
-        width: 225px;
+        width: 275px;
     }
     [data-testid="stSidebar"][aria-expanded="false"] > div:first-child{
-        width: 225px;
+        width: 275px;
         margin-left: -400px;
     }
 
@@ -46,7 +46,7 @@ modo = st.sidebar.radio(label="Elija el modo de visualización",
 
 c1, c2, c3 = st.columns((1, 1, 1))
 with c1:
-    tipo_elecciones = st.selectbox('Elija el tipo de elecciones que desea visualizar:',
+    tipo_elecciones = st.selectbox('Elija el tipo de elecciones:',
                                   ('Autonómicas', 'Generales'))
 
 if modo == 'Ganador de las elecciones':
