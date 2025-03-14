@@ -229,7 +229,7 @@ def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas, elecciones
 
     fig_provincia.update_layout(
         title_text=('Primera' if ganador == "Ganador" else 'Segunda') + ' fuerza en cada municipio de ' + provincia_elegida + ' en las elecciones ' + tipo_elecciones.lower() + ' de ' + fig_provincia.frames[-1].name,
-        title=dict(x=0.1),
+        title=dict(x=0.2),
         plot_bgcolor="rgb(245, 245, 245)",
         margin={"r": 5, "t": 35, "l": 5, "b": 10},
         showlegend=False,
@@ -325,14 +325,14 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
             fig_provincia.frames[k]['layout'].update(
                 title_text='Resultados de ' + partido + ' en ' + provincia_elegida + ' en las elecciones ' + tipo_elecciones.lower() + ' de ' +
                            fig_provincia.frames[k].name,
-                title_x=0.1)
+                title_x=0.2)
     else:
         pass
 
 
     fig_provincia.update_layout(
         title_text='Resultados de ' + partido + ' en ' + provincia_elegida + ' en las elecciones ' + tipo_elecciones.lower() + ' de ' + ("2022" if tipo_elecciones == "Autonómicas" else "Noviembre 2019"),
-        title=dict(x=0.1),
+        title=dict(x=0.2),
         margin={"r": 5, "t": 35, "l": 5, "b": 10},
         hoverlabel=dict(align="left", bgcolor=bgcolor, font_family="Rockwell", font_color="black", font_size=14),
         coloraxis_colorbar=color_axis_colorbar)
