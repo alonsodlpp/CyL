@@ -233,7 +233,7 @@ def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas, elecciones
         plot_bgcolor="rgb(245, 245, 245)",
         margin={"r": 5, "t": 35, "l": 5, "b": 10},
         showlegend=False,
-        hoverlabel=dict(align="left", bgcolor="forestgreen", font_family="Rockwell", font_size=14))
+        hoverlabel=dict(align="left", bgcolor="forestgreen", font_family="Rockwell", font_color="white", font_size=14))
     fig_provincia.update_traces(marker=dict(line=dict(color='grey')))
 
     return fig_provincia
@@ -324,7 +324,8 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
         for k in range(len(fig_provincia.frames)):
             fig_provincia.frames[k]['layout'].update(
                 title_text='Resultados de ' + partido + ' en ' + provincia_elegida + ' en las elecciones ' + tipo_elecciones.lower() + ' de ' +
-                           fig_provincia.frames[k].name)
+                           fig_provincia.frames[k].name,
+                title_x=0.5)
     else:
         pass
 
@@ -333,7 +334,7 @@ def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
         title_text='Resultados de ' + partido + ' en ' + provincia_elegida + ' en las elecciones ' + tipo_elecciones.lower() + ' de ' + ("2022" if tipo_elecciones == "Autonómicas" else "Noviembre 2019"),
         title=dict(x=0.5),
         margin={"r": 5, "t": 35, "l": 5, "b": 10},
-        hoverlabel=dict(align="left", bgcolor=bgcolor, font_family="Rockwell", font_size=14),
+        hoverlabel=dict(align="left", bgcolor=bgcolor, font_family="Rockwell", font_color="black", font_size=14),
         coloraxis_colorbar=color_axis_colorbar)
 
     return fig_provincia
@@ -351,10 +352,10 @@ mapa_prov_merged = mapa_prov_merged.sort_values(by="Elecciones")
 
 if modo == "Ganador de las elecciones":
     mapa_final = pintar_mapa_ganador(mapa_prov_merged, zoom_prov, coord_prov, tipo_elecciones)
-    st.plotly_chart(mapa_final, use_container_width=True, sharing="streamlit")
+    st.plotly_chart(mapa_final, use_container_width=True)
 else:
     mapa_final = pintar_mapa_partidos(mapa_prov_merged, zoom_prov, coord_prov, partido_elegido)
-    st.plotly_chart(mapa_final, use_container_width=True, sharing="streamlit")
+    st.plotly_chart(mapa_final, use_container_width=True)
 st.markdown("""
     <div style="text-align:right">©Junta de Castilla y León</div>
 """, unsafe_allow_html=True)
