@@ -68,7 +68,7 @@ else:
                                         'España Vaciada', 'Soria ¡YA!'))
 
 
-@st.cache(show_spinner=False)
+@st.cache_data(show_spinner=False)
 def seleccionar_elecciones(provincia, elecciones):
     """
     Selecciona el archivo de datos que contiene los datos de las elecciones elegidas por el usuario
@@ -112,7 +112,7 @@ def seleccionar_elecciones(provincia, elecciones):
     return cyl_datos
 
 
-@st.cache(show_spinner=False)
+@st.cache_data(show_spinner=False)
 def seleccionar_provincia(mapa, provincia):
     """
     Selecciona la provincia de Castilla y León (o Castilla y León en su conjunto) que se desea visualizar.
@@ -155,7 +155,7 @@ def seleccionar_provincia(mapa, provincia):
     return mapa, zoom_provincia, center_provincia
 
 
-@st.cache(suppress_st_warning=True, show_spinner=False)
+@st.cache_data(suppress_st_warning=True, show_spinner=False)
 def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas, elecciones):
     """
     Devuelve el mapa de Castilla y León o de una de sus provincias con cada municipio del color del partido ganador
@@ -239,7 +239,7 @@ def pintar_mapa_ganador(mapa_provincia_merged, zoom_arg, coordenadas, elecciones
     return fig_provincia
 
 
-@st.cache(suppress_st_warning=True, show_spinner=False)
+@st.cache_data(suppress_st_warning=True, show_spinner=False)
 def pintar_mapa_partidos(mapa_provincia_merged, zoom_arg, coordenadas, partido):
     """
         Devuelve el mapa de Castilla y León o de una de sus provincias con una escala de color continuo. Esta escala
